@@ -1,9 +1,17 @@
+import os
+import sys
+
+ROOT = "/home/husammm/Desktop/Courses/CS_courses/DL/Clabs/Mini-Rag"
+sys.path.append(ROOT)
+
 from fastapi import FastAPI
 
-app = FastAPI()
+from dotenv import load_dotenv
+load_dotenv(".env")
 
-@app.get("/welcome")
-def welcome():
-    return {
-        "message": "welcome to my project"
-    }
+from routes import base_router
+
+app = FastAPI()
+app.include_router(base_router)
+
+
