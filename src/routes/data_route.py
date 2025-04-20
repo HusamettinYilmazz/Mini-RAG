@@ -1,4 +1,8 @@
 import os
+import sys
+
+ROOT = '/home/husammm/Desktop/Courses/CS_courses/DL/Clabs/Mini-Rag/src'
+sys.path.append(ROOT)
 
 from fastapi import FastAPI, APIRouter, Depends, UploadFile, status
 from fastapi.responses import JSONResponse
@@ -8,6 +12,8 @@ from controllers import DataController, ProjectController
 from models import ResponseSignal
 
 import aiofiles
+from io import BytesIO
+import asyncio
 
 
 data_router = APIRouter(
@@ -33,9 +39,8 @@ async def upload_file(project_id: str, file: UploadFile,
     project_controller = ProjectController()
 
     files_dir, project_responsed_signal = project_controller.get_project_path(project_id)
-    file_path = os.path.join(files_dir, file.filename)
 
-    valid_write = await data_controller.write_file(file_path, file)
+    valid_write, file_name = await data_controller.write_file(project_id, file)
 
     if not valid_write:
     
@@ -48,6 +53,17 @@ async def upload_file(project_id: str, file: UploadFile,
 
     return JSONResponse( 
             content={
-            "signal": ResponseSignal.FILE_UPLOADED_SUCCESS.value
+            "signal": ResponseSignal.FILE_UPLOADED_SUCCESS.value,
+            "file_name": file_name
             }
         )
+
+class FakeFile(UploadFile):
+    def __init__(self, filename="file.txt", content=b"Hello world!!!!!"):
+        super().__init__(filename=filename, file=BytesIO(content))
+
+if __name__ == "__main__":
+
+    fake_file = FakeFile()
+    app_settings = Settings()
+    result = asyncio.run(upload_file("4", fake_file, app_settings))
