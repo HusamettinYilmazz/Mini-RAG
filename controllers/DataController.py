@@ -22,3 +22,31 @@ class DataController(BaseController):
 
         return True, ResponseSignal.FILE_UPLOAD_SUCCESS.value
 
+    async def write_file(self, file_path, file: UploadFile):
+        async with aiofile.async_open(file_path, "wb") as dest:
+            while chunck := await file.read(self.app_settings.FILE_CHUNCK_SIZE):
+                await dest.write(chunck)
+
+    def generate_unique_file_path(self, file_name:str, project_id:str):
+        random_key = int(random.uniform(1, 9) * 10**7) ## 8 digit random number
+        cleaned_file_name = self.get_clean_file_name(file_name)
+
+        project_path = os.path.join(self.root_path, "assets", "files", project_id)
+        new_file_path = os.path.join(project_path, 
+                                     f"{random_key}_{cleaned_file_name}")
+
+        while os.path.exists(new_file_path):
+            random_key = int(random.uniform(1, 9) * 10**7) ## 8 digit random number
+            new_file_path = os.path.join(project_path, 
+                                         f"{random_key}_{cleaned_file_name}")
+
+        return new_file_path
+    
+    def get_clean_file_name(self, file_name:str):
+        # remove any special characters, except underscore and .
+        cleaned_file_name = re.sub(r'[^\w.]', '', file_name.strip())
+
+        # replace spaces with underscore
+        cleaned_file_name = cleaned_file_name.replace(" ", "_")
+
+        return cleaned_file_name
