@@ -1,3 +1,7 @@
 ## python=3.8 for conda env
 fastapi==0.110.2
 uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+python-dotenv==1.0.1
+pydantic-settings==2.2.1
+aiofile==3.9.0
