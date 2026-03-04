@@ -35,4 +35,24 @@ async def upload_file(project_id: str, file: UploadFile,
     ## if is_valid save file
     project_path = ProjectController().get_project_path(project_id)
     ## change the file name to an unique one
+    file_path = data_controller.generate_unique_file_path(file.filename, project_id)
+    # file_path = os.path.join(project_path, file_name)
     
+    try:
+        await data_controller.write_file(file_path, file)
+    except Exception as e:
+        ## log the error
+        logger.error(f"Error while writing file: {e}")
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={
+                "signal": ResponseSignal.FILE_UPLOAD_FAILED.value
+                }
+        )
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value
+        }
+    )
