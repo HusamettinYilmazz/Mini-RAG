@@ -35,7 +35,7 @@ async def upload_file(project_id: str, file: UploadFile,
     ## if is_valid save file
     project_path = ProjectController().get_project_path(project_id)
     ## change the file name to an unique one
-    file_path = data_controller.generate_unique_file_path(file.filename, project_id)
+    file_path, new_filename = data_controller.generate_unique_file_path(file.filename, project_id)
     # file_path = os.path.join(project_path, file_name)
     
     try:
@@ -53,6 +53,7 @@ async def upload_file(project_id: str, file: UploadFile,
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
-            "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value
+            "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value,
+            "file_name": new_filename
         }
     )
