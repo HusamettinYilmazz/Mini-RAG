@@ -1,6 +1,6 @@
 import os
 
-from utils import Settings, get_settings
+from utils.config import Settings, get_settings
 
 class BaseController:
     def __init__(self):

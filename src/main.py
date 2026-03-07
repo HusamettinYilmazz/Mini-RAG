@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from routes import base_router, data_router
 from motor.motor_asyncio import AsyncIOMotorClient
-from utils import get_settings
+from utils.config import get_settings
 
 app = FastAPI()
 

@@ -6,7 +6,7 @@ import random
 import re
 
 from .BaseController import BaseController
-from models import ResponseSignal
+from models.enums import ResponseSignal
 
 class DataController(BaseController):
     def __init__(self):

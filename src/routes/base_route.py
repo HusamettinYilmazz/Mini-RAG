@@ -1,7 +1,7 @@
 import os
 
 from fastapi import FastAPI, APIRouter, Depends
-from utils import Settings, get_settings
+from utils.config import Settings, get_settings
 
 base_router = APIRouter(
     prefix="/api/v1", 

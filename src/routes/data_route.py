@@ -3,9 +3,9 @@ import os
 from fastapi import APIRouter, Depends, UploadFile, status
 from fastapi.responses import JSONResponse
 
-from utils import Settings, get_settings
+from utils.config import Settings, get_settings
 from controllers import DataController, ProjectController, ProcessController
-from models import ResponseSignal
+from models.enums import ResponseSignal
 from .schemes import ProcessRequest
 
 import logging
