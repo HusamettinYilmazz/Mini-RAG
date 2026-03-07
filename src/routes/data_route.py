@@ -8,6 +8,8 @@ from controllers import DataController, ProjectController, ProcessController
 from models.enums import ResponseSignal
 from .schemes import ProcessRequest
 from models.ProjectModel import ProjectModel
+from models.ChunkModel import ChunkModel
+from models.db_schemes import Chunk
 
 import logging
 logger = logging.getLogger("uvicorn.error")
@@ -63,8 +65,13 @@ async def upload_file(request: Request, project_id: str, file: UploadFile,
     )
 
 @data_router.post("/process/{project_id}")
-async def process_files(project_id: str, process_request: ProcessRequest):
+async def process_files(request: Request, project_id: str, process_request: ProcessRequest):
     file_id = process_request.file_id
+
+    project_model = ProjectModel(db_client=request.app.db_client)
+    project = await project_model.get_or_insert_project(project_id=project_id)
+
+    chunk_model = ChunkModel(db_client=request.app.db_client)
 
     chunks = ProcessController(project_id).process_file_content(
         file_id=file_id,
@@ -80,10 +87,30 @@ async def process_files(project_id: str, process_request: ProcessRequest):
             
         )
 
+    file_chunks = [
+        Chunk(
+            chunk_text= chunk.page_content,
+            chunk_metadata= chunk.metadata,
+            chunk_order= i,
+            chunk_project_id= project.id
+        )
+        for i, chunk in enumerate(chunks, start=1)
+    ]
+    
+    if process_request.do_reset: 
+        ## Delete all records then store new records
+        num_del_chunks = await chunk_model.delete_chunks_by_project_id(
+            project_id= project.id)
+    else:
+        num_del_chunks = 0
+    num_chunks = await chunk_model.insert_many_chunks(chunks=file_chunks)
+
     return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "signal": ResponseSignal.FILE_PROCESSING_SUCCES.value
+                "signal": ResponseSignal.FILE_PROCESSING_SUCCES.value,
+                "num_of_inserted_chunks": num_chunks,
+                "num_of_deleted_chunks": num_del_chunks
             }
             
         )
