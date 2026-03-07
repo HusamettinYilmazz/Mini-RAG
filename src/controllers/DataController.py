@@ -24,7 +24,7 @@ class DataController(BaseController):
 
     async def write_file(self, file_path, file: UploadFile):
         async with aiofile.async_open(file_path, "wb") as dest:
-            while chunck := await file.read(self.app_settings.FILE_CHUNCK_SIZE):
+            while chunck := await file.read(self.app_settings.FILE_CHUNK_SIZE):
                 await dest.write(chunck)
 
     def generate_unique_file_path(self, file_name:str, project_id:str):

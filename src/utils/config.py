@@ -7,7 +7,7 @@ class Settings(BaseSettings):
 
     FILE_ALLOWED_TYPES: list
     FILE_MAX_SIZE: int
-    FILE_CHUNCK_SIZE: int
+    FILE_CHUNK_SIZE: int
 
     DB_MONGO_URL: str
     DB_MONGO_NAME: str
