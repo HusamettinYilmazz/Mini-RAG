@@ -22,7 +22,7 @@ async def upload_file(request: Request, project_id: str, file: UploadFile,
                 app_settings: Settings= Depends(get_settings)):
     
     project_model = ProjectModel(db_client=request.app.db_client)
-    project = await project_model.get_or_create_project(project_id=project_id)
+    project = await project_model.get_or_insert_project(project_id=project_id)
 
     data_controller = DataController()
     is_valid, response_signal = data_controller.verify_file(file)

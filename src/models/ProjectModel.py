@@ -8,18 +8,18 @@ class ProjectModel(BaseDataModel):
         self.collection = self.db_client[DataBaseEnum.COLLECTION_PROJECT_NAME.value]
 
 
-    async def create_project(self, project: Project):
+    async def insert_project(self, project: Project):
         result = await self.collection.insert_one(project.model_dump())
         project.id = result.inserted_id
 
         return project
 
-    async def get_or_create_project(self, project_id: str):
+    async def get_or_insert_project(self, project_id: str):
         
         record = await self.collection.find_one({"project_id": project_id})
 
         if not record:
-            project = await self.create_project(Project(project_id=project_id))
+            project = await self.insert_project(Project(project_id=project_id))
             return project
         
         return Project(**record)
