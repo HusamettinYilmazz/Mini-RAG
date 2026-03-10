@@ -63,7 +63,7 @@ async def upload_file(request: Request, project_id: str, file: UploadFile,
         asset_project_id=project.id,
         asset_type=AssetTypeEnum.FILE.value,
         asset_name=new_filename,
-        asset_size=0
+        asset_size=os.path.getsize(file_path)
     )
     
     asset = await asset_model.insert_asset(asset)
