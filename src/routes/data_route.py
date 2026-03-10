@@ -5,11 +5,12 @@ from fastapi.responses import JSONResponse
 
 from utils.config import Settings, get_settings
 from controllers import DataController, ProjectController, ProcessController
-from models.enums import ResponseSignal
+from models.enums import ResponseSignal, AssetTypeEnum
 from .schemes import ProcessRequest
 from models.ProjectModel import ProjectModel
 from models.ChunkModel import ChunkModel
-from models.db_schemes import Chunk
+from models.AssetModel import AssetModel
+from models.db_schemes import Chunk, Asset
 
 import logging
 logger = logging.getLogger("uvicorn.error")
@@ -24,6 +25,7 @@ async def upload_file(request: Request, project_id: str, file: UploadFile,
                 app_settings: Settings= Depends(get_settings)):
     
     project_model = ProjectModel(db_client=request.app.db_client)
+    # project = await ProjectModel().get_or_insert_project(project_id=project_id)
     project = await project_model.get_or_insert_project(project_id=project_id)
 
     data_controller = DataController()
@@ -56,6 +58,16 @@ async def upload_file(request: Request, project_id: str, file: UploadFile,
                 }
         )
 
+    asset_model = await AssetModel.create_instance(db_client=request.app.db_client)
+    asset = Asset(
+        asset_project_id=project.id,
+        asset_type=AssetTypeEnum.FILE.value,
+        asset_name=new_filename,
+        asset_size=0
+    )
+    
+    asset = await asset_model.insert_asset(asset)
+
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
@@ -68,10 +80,11 @@ async def upload_file(request: Request, project_id: str, file: UploadFile,
 async def process_files(request: Request, project_id: str, process_request: ProcessRequest):
     file_id = process_request.file_id
 
+    # if file_id is 
     project_model = ProjectModel(db_client=request.app.db_client)
     project = await project_model.get_or_insert_project(project_id=project_id)
 
-    chunk_model = ChunkModel(db_client=request.app.db_client)
+    chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
 
     chunks = ProcessController(project_id).process_file_content(
         file_id=file_id,
