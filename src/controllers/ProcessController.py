@@ -19,7 +19,6 @@ class ProcessController(BaseController):
     
     def get_file_loader(self, file_id: str):
         file_ext = self.get_file_extension(file_id)
-        print(file_ext)
         if file_ext == ProcessingEnum.TXT_EXT.value:
             return TextLoader(
                     os.path.join(self.project_path, file_id),
