@@ -1,4 +1,4 @@
-## python=3.8 for conda env
+## python=3.8 for conda env updated to python==3.9 to match cohere requirements
 fastapi==0.110.2
 uvicorn[standard]==0.29.0
 python-multipart==0.0.9
@@ -9,3 +9,4 @@ langchain==0.1.20
 pyMuPDF==1.24.3
 motor==3.6.1
 openai==1.35.13
+cohere==5.5.8
