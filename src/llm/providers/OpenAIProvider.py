@@ -1,4 +1,5 @@
 from ..LLMInterface import LLMInterface
+from ..LLMEnums import OpenAIEnums
 from openai import OpenAI
 import logging
 
@@ -64,7 +65,7 @@ class OpenAIProvider(LLMInterface):
         temperature = temperature if temperature else self.gen_temperature
 
         messages = chat_histroy.append(self.constract_prompt(
-                prompt=prompt, role="user"))
+                prompt=prompt, role=OpenAIEnums.USER.value))
         
         response = self.client.chat.completions.create(
             model= self.gen_model_id,
@@ -82,5 +83,5 @@ class OpenAIProvider(LLMInterface):
     def constract_prompt(self, prompt: str, role: str):
         return {
             "role": role,
-            "content": prompt
+            "content": self.process_text(prompt)
         }
