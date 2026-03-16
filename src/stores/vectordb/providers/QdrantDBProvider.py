@@ -18,7 +18,7 @@ class QdrantDBProvider(VectorDBInterface):
         self.client = QdrantClient(path=self.dp_path)
 
     def disconnect(self):
-        raise "This method isn't implemented"
+        self.client = None
 
     
     def set_distance_method(self, distance_method):
