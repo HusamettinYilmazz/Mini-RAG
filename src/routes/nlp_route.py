@@ -64,3 +64,33 @@ async def index_project_into_vectordb(request: Request, project_id: str, push_re
             "inserted items count": inserted_item_cnt
         }
     )
+
+@nlp_router.get("/index/info/{project_id}")
+async def index_info(request: Request, project_id: str):
+    
+    project_model = ProjectModel(db_client=request.app.db_client)
+    project = await project_model.get_or_insert_project(project_id=project_id)
+    
+    nlp_controller = NLPController(embedding_client= request.app.emb_client,
+                                   generation_client= request.app.gen_client,
+                                   vectordb_client= request.app.vectordb_client)
+    
+    collection_info = nlp_controller.get_vectordb_collection_info(project=project)
+
+    if not collection_info:
+        return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={
+                    "signal": ResponseSignal.VECTORDB_COLLECTION_RETRIEVE_FAILED.value
+                }
+            )
+                
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "signal": ResponseSignal.VECTORDB_COLLECTION_RETRIEVED.value,
+            "collection info": collection_info
+        }
+    )
+
