@@ -94,3 +94,35 @@ async def index_info(request: Request, project_id: str):
         }
     )
 
+@nlp_router.post("/index/search/{project_id}")
+async def search_index(request: Request, project_id: str, search_request: SearchRequest):
+    
+    project_model = ProjectModel(db_client=request.app.db_client)
+    project = await project_model.get_or_insert_project(project_id=project_id)
+
+    chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
+    
+    nlp_controller = NLPController(embedding_client= request.app.emb_client,
+                                   generation_client= request.app.gen_client,
+                                   vectordb_client= request.app.vectordb_client)
+    
+    results = nlp_controller.search_vectordb_collection(
+        project= project, text= search_request.text, limit=search_request.limit
+    )
+
+    if not results:
+        return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={
+                    "signal": ResponseSignal.VECTORDB_SEARCH_FAILED.value
+                }
+            )
+                
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "signal": ResponseSignal.VECTORDB_SEARCH_SUCCES.value,
+            "results": results
+        }
+    )

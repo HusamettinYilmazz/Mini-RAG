@@ -11,3 +11,5 @@ class ResponseSignal(Enum):
     PROJECT_INDEX_FAILED="project_indexing_into_vectordb_failed"
     VECTORDB_COLLECTION_RETRIEVED = "collection_retrieved_sucess"
     VECTORDB_COLLECTION_RETRIEVE_FAILED= "collection_retrieve_failed"
+    VECTORDB_SEARCH_SUCCES = "vectordb_search_succes"
+    VECTORDB_SEARCH_FAILED = "vectordb_search_failed"
