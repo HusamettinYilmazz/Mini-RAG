@@ -7,3 +7,7 @@ class ResponseSignal(Enum):
     FILE_UPLOAD_FAILED= "file_upload_failed"
     FILE_PROCESSING_SUCCES= "file_processing_succes"
     FILE_PROCESSING_FAILED= "file_processing_failed"
+    PROJECT_INDEX_SUCCES= "project_indexing_into_vectordb_success"
+    PROJECT_INDEX_FAILED="project_indexing_into_vectordb_failed"
+    VECTORDB_COLLECTION_RETRIEVED = "collection_retrieved_sucess"
+    VECTORDB_COLLECTION_RETRIEVE_FAILED= "collection_retrieve_failed"
