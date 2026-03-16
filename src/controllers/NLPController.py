@@ -66,4 +66,17 @@ class NLPController(BaseController):
                                                metadat=metadatas, record_id=records_id)
         
         return True
-        
+
+    def search_vectordb_collection(self, project: Project, text: str, limit: int=10):
+
+        collection_name = self.create_collection_name(project_id=project.project_id)
+
+        query_vector = self.emb_client.embed_text(text, document_type=DocumentTypeEnum.QUERY.value)
+
+        result = self.vectordb_client.search_by_vector(
+            collection_name=collection_name, 
+            vector=query_vector, limit=limit)
+
+        return json.loads(
+            json.dumps(result, default=lambda x: x.__dict__)
+        )
