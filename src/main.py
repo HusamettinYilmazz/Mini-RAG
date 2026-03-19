@@ -6,6 +6,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from utils.config import get_settings
 from llm.LLMProviderFactory import LLMProviderFactory
 from stores.vectordb.VectorDBFactory import VectorDBFactory
+from llm.templates.template_parser import TemplateParser
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
@@ -28,6 +30,9 @@ async def lifespan(app: FastAPI):
 
     app.vectordb_client = vector_db_factory.create(settings.VECTOR_DB_BACKEND)
     app.vectordb_client.connect()
+
+    app.template_parser = TemplateParser(language=settings.PRIMARY_LANG,
+                                         default_language=settings.DEFAULT_LANG)
 
     yield  ## application runs
 
