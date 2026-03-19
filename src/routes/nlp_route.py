@@ -19,7 +19,8 @@ nlp_router = APIRouter(
 )
 
 @nlp_router.post("/index/push/{project_id}")
-async def index_project_into_vectordb(request: Request, project_id: str, push_request: PushRequest):
+async def index_project_into_vectordb(request: Request, project_id: str, push_request: PushRequest,
+                                      app_settings: Settings= Depends(get_settings)):
     
     project_model = ProjectModel(db_client=request.app.db_client)
     project = await project_model.get_or_insert_project(project_id=project_id)
@@ -28,7 +29,8 @@ async def index_project_into_vectordb(request: Request, project_id: str, push_re
     
     nlp_controller = NLPController(embedding_client= request.app.emb_client,
                                    generation_client= request.app.gen_client,
-                                   vectordb_client= request.app.vectordb_client)
+                                   vectordb_client= request.app.vectordb_client,
+                                   template_parser=request.app.template_parser)
     
     has_records = True
     page_num = 1
@@ -73,7 +75,8 @@ async def index_info(request: Request, project_id: str):
     
     nlp_controller = NLPController(embedding_client= request.app.emb_client,
                                    generation_client= request.app.gen_client,
-                                   vectordb_client= request.app.vectordb_client)
+                                   vectordb_client= request.app.vectordb_client,
+                                   template_parser=request.app.template_parser)
     
     collection_info = nlp_controller.get_vectordb_collection_info(project=project)
 
@@ -99,12 +102,11 @@ async def search_index(request: Request, project_id: str, search_request: Search
     
     project_model = ProjectModel(db_client=request.app.db_client)
     project = await project_model.get_or_insert_project(project_id=project_id)
-
-    chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
     
     nlp_controller = NLPController(embedding_client= request.app.emb_client,
                                    generation_client= request.app.gen_client,
-                                   vectordb_client= request.app.vectordb_client)
+                                   vectordb_client= request.app.vectordb_client,
+                                   template_parser=request.app.template_parser)
     
     results = nlp_controller.search_vectordb_collection(
         project= project, text= search_request.text, limit=search_request.limit
