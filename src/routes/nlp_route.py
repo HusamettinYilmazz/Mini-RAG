@@ -128,3 +128,34 @@ async def search_index(request: Request, project_id: str, search_request: Search
             "results": results
         }
     )
+
+@nlp_router.post("/index/answer/{project_id}")
+async def answer_rag(request: Request, project_id: str, search_request: SearchRequest):
+    
+    project_model = ProjectModel(db_client=request.app.db_client)
+    project = await project_model.get_or_insert_project(project_id=project_id)
+    
+    nlp_controller = NLPController(embedding_client= request.app.emb_client,
+                                   generation_client= request.app.gen_client,
+                                   vectordb_client= request.app.vectordb_client,
+                                   template_parser=request.app.template_parser)
+    
+    answer = nlp_controller.answer_rag_question(project= project,
+                                                 query=search_request.text,
+                                                 limit=search_request.limit)
+
+    if not answer:
+        return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={
+                    "signal": ResponseSignal.RAG_ANSWER_ERROR.value
+                }
+            )
+    
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "signal": ResponseSignal.RAG_ANSWER_SUCCES.value,
+            "answer": answer
+        }
+    )
