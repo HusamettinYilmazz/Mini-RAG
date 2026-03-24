@@ -20,6 +20,7 @@ class OpenAIProvider(LLMInterface):
         self.client = OpenAI(api_key=self.api_key,
                               base_url=self.api_url if self.api_url and len(self.api_url) else None)
         
+        self.enums = OpenAIEnums
         self.logger = logging.getLogger(__name__)
     
     def set_embedding_model(self, model_id: str, embedding_size: int):
@@ -65,12 +66,12 @@ class OpenAIProvider(LLMInterface):
         max_output_tokens = max_output_tokens if max_output_tokens else self.max_gen_output_tokens
         temperature = temperature if temperature else self.gen_temperature
 
-        messages = chat_histroy.append(self.constract_prompt(
+        chat_histroy.append(self.constract_prompt(
                 prompt=prompt, role=OpenAIEnums.USER.value))
         
         response = self.client.chat.completions.create(
             model= self.gen_model_id,
-            messages= messages,
+            messages= chat_histroy,
             max_tokens= max_output_tokens,
             temperature= temperature
         )
@@ -79,7 +80,7 @@ class OpenAIProvider(LLMInterface):
             self.logger.error("No result from generation model")
             return None
 
-        return response.choices[0].message["content"]
+        return response.choices[0].message.content
     
     def constract_prompt(self, prompt: str, role: str):
         return {
