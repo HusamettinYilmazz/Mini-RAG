@@ -63,9 +63,9 @@ class NLPController(BaseController):
             self.emb_client.embed_text(txt, document_type=DocumentTypeEnum.DOCUMENT.value)
             for txt in chunks_txt]
         
-        self.vectordb_client.insert_many_items(self, collection_name=collection_name, 
+        self.vectordb_client.insert_many_items(collection_name=collection_name, 
                                                txt=chunks_txt, vector=vectors, 
-                                               metadat=metadatas, record_id=records_id)
+                                               metadata=metadatas, record_id=records_id)
         
         return True
 
