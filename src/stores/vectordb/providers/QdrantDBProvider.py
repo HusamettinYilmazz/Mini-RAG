@@ -93,14 +93,17 @@ class QdrantDBProvider(VectorDBInterface):
             record_id = [None] * len(txt)
 
         for i in range(0, len(txt), batch_size):
-            batch_end = i+batch_size
-            if batch_end >= len(txt):
-                batch_end = len(txt) - 1
+            batch_end = min(i+batch_size, len(txt))
             
             records = [
-                        models.Record(vector=vector[i:batch_end], 
-                                    payload={"text": txt[i:batch_end], 
-                                             "metadata": metadata[i:batch_end]})
+                        models.Record(id=j, 
+                                      vector=vector[j],
+                                      payload={
+                                        "text": txt[j],
+                                        "metadata": metadata[j]
+                                    }
+                                )
+                        for j in range(i, batch_end)
                     ]
 
             try:
