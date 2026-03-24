@@ -125,7 +125,11 @@ async def search_index(request: Request, project_id: str, search_request: Search
         status_code=status.HTTP_200_OK,
         content={
             "signal": ResponseSignal.VECTORDB_SEARCH_SUCCES.value,
-            "results": results
+            "results": [{"score": point.score,
+                         "text": point.payload.get("text")}
+                        
+                        for point in results.points
+                       ]
         }
     )
 
