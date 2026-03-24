@@ -90,16 +90,16 @@ class NLPController(BaseController):
         ## build message
         document_prompts = "\n".join([
             self.template_parser.get(key= "document_prompt", group="rag",
-                                     vars = {"doc_num": idx+1, "chunk_text": doc.text})
+                                     vars = {"doc_num": idx+1, "chunk_text": doc.payload.get("text")})
                                      
-                                     for idx, doc in enumerate(retrieved_documents)
+                                     for idx, doc in enumerate(retrieved_documents.points)
                                      ])
         ## build footer
         footer_prompt = self.template_parser.get(key= "footer_prompt", group="rag",
                                                  vars = {"question": query})
 
         chat_history = [
-            self.gen_client.construct_prompt(
+            self.gen_client.constract_prompt(
                 prompt=system_prompt,
                 role=self.gen_client.enums.SYSTEM.value,
             )
