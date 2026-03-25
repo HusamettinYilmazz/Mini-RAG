@@ -45,8 +45,8 @@ $ cd mini-rag
 ### 2 Installation
 Build and activate conda environment
 ```bash
-conda create -n mini_rag python=3.10
-conda activate mini_rag
+$ conda create -n mini_rag python=3.10
+$ conda activate mini_rag
 ```
 
 Install the required packages
