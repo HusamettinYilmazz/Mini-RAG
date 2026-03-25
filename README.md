@@ -64,7 +64,7 @@ $ cp .env.example .env
 
 Run docker compose
 ```bash
-$ sudo docker compose-up -d
+$ sudo docker-compose up -d
 ```
 
 ### Run the FastAPI server
