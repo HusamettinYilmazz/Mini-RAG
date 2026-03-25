@@ -9,3 +9,17 @@ A lightweight RAG pipeline with vector search and transformer-based generation f
 This project implements a minimal yet functional RAG system that retrieves relevant document chunks using dense embeddings and generates answers using a sequence-to-sequence transformer model.
 
 The goal is to provide a clean and modular pipeline that demonstrates how retrieval and generation can be combined for knowledge-grounded QA.
+
+
+## Table of Contents
+1. [Requirements](#requirements)
+    - [Install Conda and Docker compose](#install-conda-and-docker-compose)
+
+2. [Usage](#usage)
+    - [Clone the Repository](#1-clone-the-repository)
+    - [Installation](#2-installation)
+    - [Run Docker Compose](#3-run-docker-compose)
+
+3. [Features](#features)
+4. [Tech Stack](#tech-stack)
+
