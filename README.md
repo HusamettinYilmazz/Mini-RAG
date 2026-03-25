@@ -21,6 +21,8 @@ The goal is to provide a clean and modular pipeline that demonstrates how retrie
     - [Run Docker Compose](#3-run-docker-compose)
 
 3. [Features](#features)
+    - [How It Works](#how-it-works)
+
 4. [Tech Stack](#tech-stack)
 
 
