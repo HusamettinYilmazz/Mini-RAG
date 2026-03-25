@@ -71,3 +71,39 @@ $ sudo docker compose up -d
 $ cd ../src
 $ uvicorn main:app --reload --reload-dir .
 ```
+
+## Features
+
+- Dense embedding-based semantic search  
+- Document chunking and indexing pipeline 
+- Vector similarity retrieval
+- LLM based answer generation  
+- FastAPI backend for serving queries  
+- Dockerized environment
+
+
+### How It Works
+
+1. **Document Processing**  
+   - Input documents are split into smaller chunks.
+
+2. **Embedding Generation**  
+   - Each chunk is converted into a dense vector representation.
+
+3. **Vector Storage**  
+   - Embeddings are stored in a vector database (Qdrant) for efficient similarity search.
+
+4. **Query Handling**  
+   - User query is embedded
+   - Top-k similar chunks are retrieved
+
+5. **Answer Generation**  
+   - Retrieved context is passed to a seq2seq transformer model (LLM) to generate the final answer.
+
+## Tech Stack
+
+- Python
+- FastAPI
+- LLMs: Ollama (local) + OpenAI / Cohere APIs  
+- Vector search: Qdrant
+- Docker & Docker Compose
